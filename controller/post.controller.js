@@ -1,4 +1,5 @@
 import Post from "../models/Post.js";
+import User from "../models/User.js";
 export const createPost=async(req,res)=>{
     try {
         const newPostData={
@@ -10,6 +11,10 @@ export const createPost=async(req,res)=>{
             owner:req.user._id
         }
         const newPost=await Post.create(newPostData)
+        const user=await User.findById(req.user._id)
+        user.posts.push(newPost._id)
+        await user.save()
+
 
         res.status(200).json({
             sucsess:true,
